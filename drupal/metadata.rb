@@ -3,7 +3,7 @@ maintainer_email "steve@slantview.com"
 license          "Apache 2.0"
 description      "Installs/Configures Drupal"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "0.1.0"
+version          "0.1.1"
 
 recipe "drupal", "Installs and configures Drupal LAMP stack on a single system"
 
@@ -23,7 +23,7 @@ attribute "drupal/version",
   :description => "Version of Drupal to download from the Drupal site.",
   :default => "7.10"
   
-attribute "wordpress/md5",
+attribute "drupal/md5",
   :display_name => "Wordpress tarball checksum",
   :description => "MD5 checksum of the tarball for the version specified.",
   :default => "1caafb849bc756e62dd874b90b95ab31"
