@@ -85,7 +85,7 @@ template "#{node['drupal']['dir']}/sites/default/settings.php" do
   variables(
     :database        => node['drupal']['db']['database'],
     :user            => node['drupal']['db']['username'],
-    :password        => node['drupal']['db']['password'],
+    :password        => node['drupal']['db']['password']
   )
   notifies :write, "log[Navigate to 'http://#{server_fqdn}/install.php?profile=#{install_profile}' to complete drupal installation]"
 end
