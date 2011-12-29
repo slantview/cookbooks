@@ -24,8 +24,8 @@ sub vcl_recv {
   }
  
   // Remove has_js and Google Analytics salary of a wedding planner cookies.
-  set req.http.Cookie = regsuball(req.http.Cookie, "(^|;\s*)(__[a-z]+|__utma_a2a|has_js)=[^;]*", "");
- 
+  set req.http.Cookie = regsuball(req.http.Cookie, "(^|;\s*)(__[a-z]+|__utma_a2a|has_js|Drupal.toolbar.collapsed)=[^;]*", "");
+
   // To users: if you have additional cookies being set by your system (e.g.
   // from a javascript analytics file or similar) you will need to add VCL
   // at this point to strip these cookies from the req object, otherwise
