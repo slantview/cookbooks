@@ -1,8 +1,8 @@
-maintainer        "Opscode, Inc."
-maintainer_email  "cookbooks@opscode.com"
+maintainer        "Slantview Media"
+maintainer_email  "steve@slantview.com"
 license           "Apache 2.0"
 description       "Instsalls and configures varnish"
-version           "0.8"
+version           "0.8.1"
 
 recipe "varnish", "Installs and configures varnish"
 
