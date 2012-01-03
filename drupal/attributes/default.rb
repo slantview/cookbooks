@@ -29,6 +29,7 @@ default['drupal']['db']['port'] = "3306"
 default['drupal']['db']['prefix'] = ""
 default['drupal']['server_aliases'] = [node['fqdn']]
 default['drupal']['install_profile'] = "standard"
+default['drupal']['site_name'] = "default"
 default['drupal']['site_user'] = "root"
 default['drupal']['site_mail'] = "user@example.com"
 default['drupal']['site_pass'] = "password"

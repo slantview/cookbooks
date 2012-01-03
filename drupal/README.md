@@ -28,6 +28,7 @@ Cookbooks
 * php
 * apache2
 * opensssl (uses library to generate secure passwords)
+* drush
 
 Attributes
 ==========

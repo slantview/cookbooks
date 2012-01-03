@@ -13,7 +13,7 @@ end
 
 depends "apache2", ">= 0.99.4"
 depends "mysql", ">= 1.0.5"
-depends "drush", ">= 0.9.1"
+depends "drush", ">= 0.9.3"
 
 %w{ debian ubuntu }.each do |os|
   supports os

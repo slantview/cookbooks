@@ -1,8 +1,9 @@
 #
+# Author:: Steve Rude (<steve@slantview.com>)
 # Cookbook Name:: drupal
-# Recipe:: default
+# Attributes:: drupal
 #
-# Copyright 2009-2010, Opscode, Inc.
+# Copyright 2011, Slantview Media
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,6 +23,7 @@ include_recipe "mysql::server"
 include_recipe "php"
 include_recipe "php::module_mysql"
 include_recipe "apache2::mod_php5"
+include_recipe "drush"
 
 if node.has_key?("ec2")
   server_fqdn = node['ec2']['public_hostname']
@@ -29,19 +31,11 @@ else
   server_fqdn = node['fqdn']
 end
 
-install_profile = node['drupal']['install_profile'] || "standard"
-
-node.set['drupal']['db']['password'] = secure_password
+# Setup releases and shared files, settings directories that mimic the 
+# capistrano way of linking.  This will be useful later on if we start 
+# deploying locally using capistrano or deployr.
 
 directory "#{node['drupal']['dir']}/releases" do
-  owner "#{node[:apache][:group]}"
-  group "#{node[:apache][:user]}"
-  mode "0755"
-  action :create
-  recursive true
-end
-
-directory "#{node['drupal']['dir']}/shared" do
   owner "#{node[:apache][:group]}"
   group "#{node[:apache][:user]}"
   mode "0755"
@@ -65,24 +59,34 @@ directory "#{node['drupal']['dir']}/shared/settings" do
   recursive true
 end
 
+# Download the latest version of Drupal via drush into the 
 drush_command "download-drupal-#{node['drupal']['version']}" do
   action :run
   command "dl"
   args ["drupal-#{node['drupal']['version']}"]
   site_dir "#{node['drupal']['dir']}/releases"
-  quiet false
+  quiet true
   default_yes true
+  not_if do
+      File.exists?("#{node['drupal']['dir']}/releases/drupal-#{node['drupal']['version']}")
+    end
 end
 
+# Create database if it doesn't already exist.
 execute "create #{node['drupal']['db']['database']} database" do
   command "/usr/bin/mysqladmin -u root -p\"#{node['mysql']['server_root_password']}\" create #{node['drupal']['db']['database']}"
   not_if "mysql -u root -p\"#{node['mysql']['server_root_password']}\" -e 'show databases;' | grep #{node['drupal']['db']['database']}"
   notifies :create, "ruby_block[save node data]", :immediately unless Chef::Config[:solo]
 end
 
-grant_cmd = ["GRANT ALL ON #{node['drupal']['db']['database']}.*",
+# Setup secure password
+node.set['drupal']['db']['password'] = secure_password
+
+# Grant "ALL" on database to our new user.
+# TODO: Can probably limit this down to specific (SELECT, INSERT, UPDATE, DELETE, CREATE) ?
+grant_cmd = ["echo \"GRANT ALL ON #{node['drupal']['db']['database']}.*",
              "TO '#{node['drupal']['db']['username']}'@'#{node['drupal']['db']['hostname']}'",
-             "IDENTIFIED BY '#{node['drupal']['db']['password']}'",
+             "IDENTIFIED BY '#{node['drupal']['db']['password']}'\"",
              "| mysql -u root -p\"#{node['mysql']['server_root_password']}\""].join(' ')
 
 execute "grant #{node['drupal']['db']['username']} database permissions" do
@@ -91,6 +95,7 @@ execute "grant #{node['drupal']['db']['username']} database permissions" do
   notifies :create, "ruby_block[save node data]", :immediately unless Chef::Config[:solo]
 end
 
+# Save the node data so we have access to our state, including passwords, etc.
 unless Chef::Config[:solo]
   ruby_block "save node data" do
     block do
