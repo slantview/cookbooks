@@ -8,6 +8,7 @@ action :run do
   end
   if new_resource.site_dir
     new_resource.options.push("--destination=#{new_resource.site_dir}")
+  end
   if new_resource.quiet
     new_resource.options.push("-q")
   end
