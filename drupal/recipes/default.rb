@@ -31,10 +31,10 @@ end
 
 install_profile = node['drupal']['install_profile'] || "standard"
 
-node.set['drupal']['db']['password'] = secure_password
+node.set['drupal']['db']['password'] = node['mysql']['server_root_password'] 
 
 remote_file "#{Chef::Config[:file_cache_path]}/drupal-#{node['drupal']['version']}.tar.gz" do
-  checksum node['drupal']['checksum']
+  checksum node['drupal']['md5']
   source "http://drupal.org/files/drupal-#{node['drupal']['version']}.tar.gz"
   mode "0644"
 end
@@ -51,52 +51,4 @@ execute "untar-drupal" do
   cwd node['drupal']['dir']
   command "tar --strip-components 1 -xzf #{Chef::Config[:file_cache_path]}/drupal-#{node['drupal']['version']}.tar.gz"
   creates "#{node['drupal']['dir']}/sites/default/default.settings.php"
-end
-
-execute "create #{node['drupal']['db']['database']} database" do
-  command "/usr/bin/mysqladmin -u root -p\"#{node['mysql']['server_root_password']}\" create #{node['drupal']['db']['database']}"
-  not_if do
-    require 'mysql'
-    m = Mysql.new("localhost", "root", node['mysql']['server_root_password'])
-    m.list_dbs.include?(node['drupal']['db']['database'])
-  end
-  notifies :create, "ruby_block[save node data]", :immediately unless Chef::Config[:solo]
-end
-
-# save node data after writing the MYSQL root password, so that a failed chef-client run that gets this far doesn't cause an unknown password to get applied to the box without being saved in the node data.
-unless Chef::Config[:solo]
-  ruby_block "save node data" do
-    block do
-      node.save
-    end
-    action :create
-  end
-end
-
-log "Navigate to 'http://#{server_fqdn}/install.php?profile=#{install_profile}' to complete Drupal installation" do
-  action :nothing
-end
-
-template "#{node['drupal']['dir']}/sites/default/settings.php" do
-  source "settings.php.erb"
-  owner "root"
-  group "root"
-  mode "0644"
-  variables(
-    :database        => node['drupal']['db']['database'],
-    :user            => node['drupal']['db']['username'],
-    :password        => node['drupal']['db']['password']
-  )
-  notifies :write, "log[Navigate to 'http://#{server_fqdn}/install.php?profile=#{install_profile}' to complete drupal installation]"
-end
-
-apache_site "000-default" do
-  enable false
-end
-
-web_app "drupal" do
-  template "drupal.conf.erb"
-  docroot "#{node['drupal']['dir']}"
-  server_name server_fqdn
-  server_aliases node['drupal']['server_aliases']
 end
