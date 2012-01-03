@@ -46,9 +46,3 @@ directory "#{node['drupal']['dir']}" do
   action :create
   recursive true
 end
-
-execute "untar-drupal" do
-  cwd node['drupal']['dir']
-  command "tar --strip-components 1 -xzf #{Chef::Config[:file_cache_path]}/drupal-#{node['drupal']['version']}.tar.gz"
-  creates "#{node['drupal']['dir']}/sites/default/default.settings.php"
-end
