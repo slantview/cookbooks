@@ -33,16 +33,43 @@ install_profile = node['drupal']['install_profile'] || "standard"
 
 node.set['drupal']['db']['password'] = node['mysql']['server_root_password'] 
 
-directory "#{node['drupal']['dir']}" do
-  owner "root"
-  group "root"
+directory "#{node['drupal']['dir']}/releases" do
+  owner "#{node[:apache][:group]}"
+  group "#{node[:apache][:user]}"
   mode "0755"
   action :create
   recursive true
 end
 
-bash "download-drupal" do
-  code <<-EOH
-/usr/bin/env drush dl drupal-#{node['drupal']['version']} --destination #{node['drupal']['dir']}
-  EOH
+directory "#{node['drupal']['dir']}/shared" do
+  owner "#{node[:apache][:group]}"
+  group "#{node[:apache][:user]}"
+  mode "0755"
+  action :create
+  recursive true
+end
+
+directory "#{node['drupal']['dir']}/shared/files" do
+  owner "#{node[:apache][:group]}"
+  group "#{node[:apache][:user]}"
+  mode "0755"
+  action :create
+  recursive true
+end
+
+directory "#{node['drupal']['dir']}/shared/settings" do
+  owner "#{node[:apache][:group]}"
+  group "#{node[:apache][:user]}"
+  mode "0755"
+  action :create
+  recursive true
+end
+
+drush_command "download-drupal" do
+  action :run
+  command "download"
+  args ["drupal-#{node['drupal']['version']}"]
+  site_dir "#{node['drupal']['dir']}/releases"
+  quiet true
+  default_yes true
 end

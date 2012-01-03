@@ -20,7 +20,6 @@
 
 # General settings
 default['drupal']['version'] = "7.10"
-default['drupal']['md5'] = "1caafb849bc756e62dd874b90b95ab31"
 default['drupal']['dir'] = "/var/www/drupal"
 default['drupal']['db']['database'] = "drupaldb"
 default['drupal']['db']['username'] = "drupaluser"

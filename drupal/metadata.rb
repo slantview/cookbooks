@@ -3,7 +3,7 @@ maintainer_email "steve@slantview.com"
 license          "Apache 2.0"
 description      "Installs/Configures Drupal"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "0.1.6"
+version          "0.1.7"
 
 recipe "drupal", "Installs and configures Drupal LAMP stack on a single system"
 
@@ -13,8 +13,7 @@ end
 
 depends "apache2", ">= 0.99.4"
 depends "mysql", ">= 1.0.5"
-depends "php", ">= 1.0.0"
-depends "drush", ">= 0.0.0"
+depends "drush", ">= 0.9.1"
 
 %w{ debian ubuntu }.each do |os|
   supports os
@@ -24,11 +23,6 @@ attribute "drupal/version",
   :display_name => "Drupal download version",
   :description => "Version of Drupal to download from the Drupal site.",
   :default => "7.10"
-  
-attribute "drupal/md5",
-  :display_name => "Wordpress tarball checksum",
-  :description => "MD5 checksum of the tarball for the version specified.",
-  :default => "1caafb849bc756e62dd874b90b95ab31"
   
 attribute "drupal/dir",
   :display_name => "Drupal installation directory",
