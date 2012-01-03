@@ -27,6 +27,7 @@ action :run do
   end
   args = drush_args.join(" ")
   options = drush_options.join(" ")
+  Chef::Log.info "Executing command #{drush_cmd} #{args} #{options}"
   execute "#{drush_cmd} #{args} #{options}" do
     command "#{drush_cmd}"
   end
