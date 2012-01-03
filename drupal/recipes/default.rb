@@ -31,7 +31,7 @@ end
 
 install_profile = node['drupal']['install_profile'] || "standard"
 
-node.set['drupal']['db']['password'] = node['mysql']['server_root_password'] 
+node.set['drupal']['db']['password'] = secure_password
 
 directory "#{node['drupal']['dir']}/releases" do
   owner "#{node[:apache][:group]}"
@@ -65,18 +65,29 @@ directory "#{node['drupal']['dir']}/shared/settings" do
   recursive true
 end
 
-drush_command "download-drupal" do
+drush_command "download-drupal-#{node['drupal']['version']}" do
   action :run
-  command "download"
+  command "dl"
   args ["drupal-#{node['drupal']['version']}"]
   site_dir "#{node['drupal']['dir']}/releases"
-  quiet true
+  quiet false
   default_yes true
 end
 
 execute "create #{node['drupal']['db']['database']} database" do
   command "/usr/bin/mysqladmin -u root -p\"#{node['mysql']['server_root_password']}\" create #{node['drupal']['db']['database']}"
   not_if "mysql -u root -p\"#{node['mysql']['server_root_password']}\" -e 'show databases;' | grep #{node['drupal']['db']['database']}"
+  notifies :create, "ruby_block[save node data]", :immediately unless Chef::Config[:solo]
+end
+
+grant_cmd = ["GRANT ALL ON #{node['drupal']['db']['database']}.*",
+             "TO '#{node['drupal']['db']['username']}'@'#{node['drupal']['db']['hostname']}'",
+             "IDENTIFIED BY '#{node['drupal']['db']['password']}'",
+             "| mysql -u root -p\"#{node['mysql']['server_root_password']}\""].join(' ')
+
+execute "grant #{node['drupal']['db']['username']} database permissions" do
+  command grant_cmd 
+  only_if "mysql -u root -p\"#{node['mysql']['server_root_password']}\" -e 'show databases;' | grep #{node['drupal']['db']['database']}"
   notifies :create, "ruby_block[save node data]", :immediately unless Chef::Config[:solo]
 end
 
@@ -110,6 +121,10 @@ template "#{node['drupal']['dir']}/shared/settings/settings.php" do
     :prefix => node['drupal']['db']['prefix'],
     :port => node['drupal']['db']['port']
   )
+end
+
+link "#{node['drupal']['dir']}/current/sites/default/settings.php" do
+  to "#{node['drupal']['dir']}/shared/settings/settings.php"
 end
 
 apache_site "000-default" do
