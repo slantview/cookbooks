@@ -50,16 +50,16 @@ directory "#{node['drupal']['dir']}/shared" do
 end
 
 directory "#{node['drupal']['dir']}/shared/files" do
-  owner "#{node[:apache][:group]}"
-  group "#{node[:apache][:user]}"
+  owner node[:apache][:user]
+  group node[:apache][:group]
   mode "0755"
   action :create
   recursive true
 end
 
 directory "#{node['drupal']['dir']}/shared/settings" do
-  owner "#{node[:apache][:group]}"
-  group "#{node[:apache][:user]}"
+  owner node[:apache][:user]
+  group node[:apache][:group]
   mode "0755"
   action :create
   recursive true
@@ -72,4 +72,53 @@ drush_command "download-drupal" do
   site_dir "#{node['drupal']['dir']}/releases"
   quiet true
   default_yes true
+end
+
+execute "create #{node['drupal']['db']['database']} database" do
+  command "/usr/bin/mysqladmin -u root -p\"#{node['mysql']['server_root_password']}\" create #{node['drupal']['db']['database']}"
+  not_if "mysql -u root -p\"#{node['mysql']['server_root_password']}\" -e 'show databases;' | grep #{node['drupal']['db']['database']}"
+  notifies :create, "ruby_block[save node data]", :immediately unless Chef::Config[:solo]
+end
+
+unless Chef::Config[:solo]
+  ruby_block "save node data" do
+    block do
+      node.save
+    end
+    action :create
+  end
+end
+
+link "#{node['drupal']['dir']}/current" do
+  to "#{node['drupal']['dir']}/releases/drupal-#{node['drupal']['version']}"
+end
+
+link "#{node['drupal']['dir']}/current/sites/default/files" do
+  to "#{node['drupal']['dir']}/shared/files"
+end
+
+template "#{node['drupal']['dir']}/shared/settings/settings.php" do
+  source "settings.php.erb"
+  owner node[:apache][:user]
+  group node[:apache][:group]
+  mode "0644"
+  variables(
+    :username => node['drupal']['db']['username'],
+    :password => node['drupal']['db']['password'],
+    :database => node['drupal']['db']['database'],
+    :hostname => node['drupal']['db']['hostname'],
+    :prefix => node['drupal']['db']['prefix'],
+    :port => node['drupal']['db']['port']
+  )
+end
+
+apache_site "000-default" do
+  enable false
+end
+
+web_app "drupal" do
+  template "drupal.conf.erb"
+  docroot "#{node['drupal']['dir']}/current"
+  server_name server_fqdn
+  server_aliases node['drupal']['server_aliases']
 end

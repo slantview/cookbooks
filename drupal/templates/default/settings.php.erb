@@ -7,9 +7,9 @@ $databases['default']['default'] = array(
   'driver' => 'mysql',
   'database' => '<%= @database %>',
   'username' => '<%= @username %>',
-  'password' => 'password',
-  'host' => 'localhost',
-  'prefix' => '',
+  'password' => '<%= @password %>',
+  'host' => '<%= @hostname %>',
+  'prefix' => '<%= @prefix %>',
 );
 
 $update_free_access = FALSE;

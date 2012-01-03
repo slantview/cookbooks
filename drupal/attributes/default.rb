@@ -22,6 +22,9 @@
 default['drupal']['version'] = "7.10"
 default['drupal']['dir'] = "/var/www/drupal"
 default['drupal']['db']['database'] = "drupaldb"
-default['drupal']['db']['username'] = "drupaluser"
+default['drupal']['db']['username'] = "drupal"
+default['drupal']['db']['password'] = "password"
+default['drupal']['db']['hostname'] = "localhost"
+default['drupal']['db']['prefix'] = ""
 default['drupal']['server_aliases'] = [node['fqdn']]
 default['drupal']['install_profile'] = "standard"
