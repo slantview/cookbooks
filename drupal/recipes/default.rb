@@ -33,16 +33,16 @@ install_profile = node['drupal']['install_profile'] || "standard"
 
 node.set['drupal']['db']['password'] = node['mysql']['server_root_password'] 
 
-remote_file "#{Chef::Config[:file_cache_path]}/drupal-#{node['drupal']['version']}.tar.gz" do
-  checksum node['drupal']['md5']
-  source "http://drupal.org/files/drupal-#{node['drupal']['version']}.tar.gz"
-  mode "0644"
-end
-
 directory "#{node['drupal']['dir']}" do
   owner "root"
   group "root"
   mode "0755"
   action :create
   recursive true
+end
+
+bash "download-drupal" do
+  code <<-EOH
+/usr/bin/env drush dl drupal-#{node['drupal']['version']} --destination #{node['drupal']['dir']}
+  EOH
 end
