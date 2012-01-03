@@ -18,6 +18,8 @@
 # limitations under the License.
 #
 
+include_recipe "drupal"
+
 install_profile = node['drupal']['install_profile'] || "standard"
 node['drupal']['site_pass'] = secure_password
 
@@ -28,7 +30,8 @@ db_url = ["mysql://#{node['drupal']['db']['username']}:#{node['drupal']['db']['p
 drush_command "install-drupal-#{node['drupal']['install_profile']}" do
   action :run
   command "si"
-  args ["--account-name=#{node['drupal']['site_user']}", 
+  args ["--root=#{node['drupal']['dir']}/current",
+        "--account-name=#{node['drupal']['site_user']}", 
         "--db-prefix=#{node['drupal']['db']['prefix']}",
         "--db-url=#{db_url}",
         "--account-pass=#{node['drupal']['site_pass']}",
