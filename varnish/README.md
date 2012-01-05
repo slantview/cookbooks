@@ -32,8 +32,8 @@ Tested on:
 Attributes
 ==========
 
-* `node['varnish']['dir']` - location of the varnish configuration directory
-* `node['varnish']['default']` - location of the `default` file that controls 
+* `node[:varnish][:dir]` - location of the varnish configuration directory
+* `node[:varnish][:default]` - location of the `default` file that controls 
    the varnish init script on Debian/Ubuntu systems.
 * `node[:varnish][:node]` -  (Default: /etc/default/varnish)
 * `node[:varnish][:nfiles]` - Maximum number of open files (for ulimit -n) 
