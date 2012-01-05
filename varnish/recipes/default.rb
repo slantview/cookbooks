@@ -29,7 +29,6 @@ template "#{node[:varnish][:dir]}/default.vcl" do
 end
 
 template "#{node[:varnish][:default]}" do
-  case node.platform
   source "default.erb"
   owner "root"
   group "root"
