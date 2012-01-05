@@ -1,0 +1,30 @@
+# Configuration file for varnish created by chef.  Do not modify.
+
+NFILES=<%= @nfiles %>
+MEMLOCK=<%= @memlock %>
+DAEMON_COREFILE_LIMIT=<%= @daemon_corefile_limit %>
+RELOAD_VCL=<%= @reload_vcl %>
+VARNISH_VCL_CONF=<%= @vcl_conf %>
+VARNISH_LISTEN_ADDRESS=<%= @listen_address %>
+VARNISH_LISTEN_PORT=<%= @listen_port %>
+VARNISH_ADMIN_LISTEN_ADDRESS=<%= @admin_listen_address %>
+VARNISH_ADMIN_LISTEN_PORT=<%= @admin_listen_port %>
+VARNISH_SECRET_FILE=<%= @secret_file %>
+VARNISH_MIN_THREADS=<%= @min_threads %>
+VARNISH_MAX_THREADS=<%= @max_threads %>
+VARNISH_THREAD_TIMEOUT=<%= @thread_timeout %>
+VARNISH_STORAGE_FILE=<%= @storage_file %>
+VARNISH_STORAGE_SIZE=<%= @storage_size %>
+VARNISH_STORAGE=<%= @storage %>
+VARNISH_TTL=<%= @ttl %>
+VARNISH_USER=<%= @user %>
+VARNISH_GROUP=<%= @group %>
+
+DAEMON_OPTS="-a ${VARNISH_LISTEN_ADDRESS}:${VARNISH_LISTEN_PORT} \
+             -f ${VARNISH_VCL_CONF} \
+             -T ${VARNISH_ADMIN_LISTEN_ADDRESS}:${VARNISH_ADMIN_LISTEN_PORT} \
+             -t ${VARNISH_TTL} \
+             -w ${VARNISH_MIN_THREADS},${VARNISH_MAX_THREADS},${VARNISH_THREAD_TIMEOUT} \
+             -u ${VARNISH_USER} -g ${VARNISH_GROUP} \
+             -S ${VARNISH_SECRET_FILE} \
+             -s ${VARNISH_STORAGE}"

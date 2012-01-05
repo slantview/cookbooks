@@ -17,7 +17,9 @@
 # limitations under the License.
 #
 
-package "varnish"
+package "varnish" do
+  action :install
+end
 
 template "#{node[:varnish][:dir]}/default.vcl" do
   source "default.vcl.erb"
@@ -27,10 +29,40 @@ template "#{node[:varnish][:dir]}/default.vcl" do
 end
 
 template "#{node[:varnish][:default]}" do
-  source "ubuntu-default.erb"
+  case node.platform
+  source "default.erb"
   owner "root"
   group "root"
   mode 0644
+  variables(
+    :nfiles => node[:varnish][:nfiles],
+    :memlock => node[:varnish][:memlock],
+    :daemon_corefile_limit => node[:varnish][:daemon_corefile_limit],
+    :reload_vcl => node[:varnish][:reload_vcl],
+    :vcl_conf => node[:varnish][:vcl_conf],
+    :listen_address => node[:varnish][:listen_address],
+    :listen_port => node[:varnish][:listen_port],
+    :admin_listen_address => node[:varnish][:admin_listen_address],
+    :admin_listen_port => node[:varnish][:admin_listen_port],
+    :secret_file => node[:varnish][:secret_file],
+    :min_threads => node[:varnish][:min_threads],
+    :max_threads => node[:varnish][:max_threads],
+    :thread_timeout => node[:varnish][:thread_timeout],
+    :storage_file => node[:varnish][:storage_file],
+    :storage_size => node[:varnish][:storage_size],
+    :storage => node[:varnish][:storage],
+    :ttl => node[:varnish][:ttl],
+    :user => node[:varnish][:user],
+    :group => node[:varnish][:group]
+  )
+end
+
+template "#{node[:varnish][:dir]}/secret" do
+  source "secret.erb"
+  owner "root"
+  group "root"
+  mode 0600
+  variables :varnish_secret => node[:varnish][:secret]
 end
 
 service "varnish" do

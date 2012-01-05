@@ -31,6 +31,15 @@ else
   server_fqdn = node['fqdn']
 end
 
+# We must install the pre-requisites in order to support drupal
+# TODO: Make sure we are platform agnostic.  FIX THIS.
+php_packages = %w{ php-common php php-devel php-cli php-pear php-xml }
+php_packages.each do |pkg|
+  package pkg do
+    action :install
+  end
+end
+
 # Setup releases and shared files, settings directories that mimic the 
 # capistrano way of linking.  This will be useful later on if we start 
 # deploying locally using capistrano or deployr.
@@ -41,6 +50,9 @@ directory "#{node['drupal']['dir']}/releases" do
   mode "0755"
   action :create
   recursive true
+  not_if do
+    File.exists?("#{node['drupal']['dir']}/releases")
+  end
 end
 
 directory "#{node['drupal']['dir']}/shared/files" do
@@ -49,6 +61,9 @@ directory "#{node['drupal']['dir']}/shared/files" do
   mode "0755"
   action :create
   recursive true
+  not_if do
+    File.exists?("#{node['drupal']['dir']}/shared/files")
+  end
 end
 
 directory "#{node['drupal']['dir']}/shared/settings" do
@@ -57,6 +72,9 @@ directory "#{node['drupal']['dir']}/shared/settings" do
   mode "0755"
   action :create
   recursive true
+  not_if do
+    File.exists?("#{node['drupal']['dir']}/shared/settings")
+  end
 end
 
 # Download the latest version of Drupal via drush into the 
@@ -68,8 +86,8 @@ drush_command "download-drupal-#{node['drupal']['version']}" do
   quiet true
   default_yes true
   not_if do
-      File.exists?("#{node['drupal']['dir']}/releases/drupal-#{node['drupal']['version']}")
-    end
+    File.exists?("#{node['drupal']['dir']}/releases/drupal-#{node['drupal']['version']}")
+  end
 end
 
 # Create database if it doesn't already exist.

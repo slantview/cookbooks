@@ -2,7 +2,7 @@ maintainer       "Mark Sonnabaum"
 maintainer_email "mark.sonnabaum@acquia.com"
 license          "Apache 2.0"
 description      "Installs drush head"
-version          "0.9.8"
+version          "0.9.10"
 recipe           "drush", "Installs drush head"
 
 %w{ debian ubuntu arch }.each do |os|

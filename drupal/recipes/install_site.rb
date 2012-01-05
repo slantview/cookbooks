@@ -40,7 +40,9 @@ drush_command "install-drupal-#{node['drupal']['install_profile']}" do
         "--clean-url=#{node['drupal']['site_clean_urls']}",
         "--site-name=#{node['fqdn']}",
         "--site-mail=#{node['drupal']['site_mail']}",
-        "--sites-subdir=#{node['drupal']['site_name']}"]
+        "--sites-subdir=#{node['drupal']['site_name']}",
+        "--db-su=root",
+        "--db-su-pw=#{node['mysql']['server_root_password']}"]
   notifies :create, "ruby_block[save node data]", :immediately unless Chef::Config[:solo]
 end
 

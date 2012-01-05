@@ -34,7 +34,11 @@ when "redhat", "centos", "scientific"
     if node.platform_version.to_f < 6.0
       package_name "php53"
     else
-      package_name "php"
+      if File.exists?("/etc/yum.repos.d/ius.repo")
+        package_name "php"
+      else
+        package_name "php"  
+      end
     end
     action :install
     notifies :run, resources(:execute => "generate-module-list"), :immediately

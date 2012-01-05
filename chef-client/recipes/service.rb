@@ -19,6 +19,10 @@
 # limitations under the License.
 #
 
+gem_package "chef" do
+  action :install
+end
+
 root_group = value_for_platform(
   ["openbsd", "freebsd", "mac_os_x"] => { "default" => "wheel" },
   "default" => "root"

@@ -1,11 +1,15 @@
-maintainer        "Slantview Media"
+maintainer        "Steve Rude"
 maintainer_email  "steve@slantview.com"
 license           "Apache 2.0"
-description       "Instsalls and configures varnish"
-version           "0.8.1"
+description       "Installs and configures varnish"
+version           "1.0.0"
 
 recipe "varnish", "Installs and configures varnish"
 
-%w{ubuntu debian}.each do |os|
+%w{ openssl }.each do |cb|
+  depends cb
+end
+
+%w{ubuntu debian centos redhat fedora}.each do |os|
   supports os
 end

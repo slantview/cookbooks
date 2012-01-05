@@ -18,14 +18,16 @@
 # limitations under the License.
 #
 
+packages = %w{ php-common php php-devel php-cli php-pear }
+
 pkgs = value_for_platform(
   [ "centos", "redhat", "fedora" ] => {
-    "default" => %w{ php53 php53-devel php53-cli php-pear }
+    "default" => packages
   },
   [ "debian", "ubuntu" ] => {
-    "default" => %w{ php5-cgi php5 php5-dev php5-cli php-pear }
+    "default" => %w{ php5-cgi php5 php5-dev php5-cli php5-common php-pear }
   },
-  "default" => %w{ php5-cgi php5 php5-dev php5-cli php-pear }
+  "default" => %w{ php5-cgi php5 php5-dev php5-cli php5-common php-pear }
 )
 
 pkgs.each do |pkg|
