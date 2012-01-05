@@ -43,8 +43,8 @@ Attributes
 * `node[:varnish][:memlock]` - Locked shared memory (for ulimit -l). Default 
    log size is 82MB + header (Default: 82000)
 * `node[:varnish][:reload_vcl]` - Set this to 1 to make init script reload try 
-   to switch vcl without restart.  # To make this work, you need to node the 
-   following variables # explicit: VARNISH_VCL_CONF, 
+   to switch vcl without restart.  To make this work, you need to node the 
+   following variables explicit: VARNISH_VCL_CONF, 
    VARNISH_ADMIN_LISTEN_ADDRESS, VARNISH_ADMIN_LISTEN_PORT, VARNISH_SECRET_FILE
    (Default: 0)
 * `node[:varnish][:varnish_vcl_conf]` - Main configuration file. (Default: 
