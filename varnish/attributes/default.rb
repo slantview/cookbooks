@@ -58,10 +58,10 @@ when "centos","redhat"
 end
 
 # Main configuration file.
-default[:varnish][:varnish_vcl_conf] = "#{default[:varnish][:dir]}/default.vcl"
+default[:varnish][:vcl_conf] = "#{node[:varnish][:dir]}/default.vcl"
 
 # Shared secret file for admin interface
-default[:varnish][:secret_file] = "#{default[:varnish][:dir]}/secret"
+default[:varnish][:secret_file] = "#{node[:varnish][:dir]}/secret"
 
 # Default address and port to bind to
 # Blank address means all IPv4 and IPv6 interfaces, otherwise specify
@@ -83,14 +83,14 @@ default[:varnish][:max_threads] = "1000"
 default[:varnish][:thread_timeout] = 120
 
 # Cache file location
-default[:varnish][:storage_file] = "/var/lib/varnish/#{node['fqdn']}/varnish_storage.bin"
+default[:varnish][:storage_file] = "/var/lib/varnish/varnish_storage.bin"
 
 # Cache file size: in bytes, optionally using k / M / G / T suffix,
 # or in percentage of available disk space using the % suffix.
 default[:varnish][:storage_size] = "1G"
 
 # Backend storage specification
-default[:varnish][:storage] = 'file,${VARNISH_STORAGE_FILE},${VARNISH_STORAGE_SIZE}'
+default[:varnish][:storage] = '"file,${VARNISH_STORAGE_FILE},${VARNISH_STORAGE_SIZE}"'
 
 # Default TTL used when the backend does not specify one
 default[:varnish][:ttl] = "120"
