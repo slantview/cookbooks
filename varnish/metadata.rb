@@ -6,7 +6,7 @@ version           "1.0.0"
 
 recipe "varnish", "Installs and configures varnish"
 
-%w{ openssl }.each do |cb|
+%w{ openssl iptables }.each do |cb|
   depends cb
 end
 
