@@ -64,6 +64,22 @@ template "#{node[:varnish][:dir]}/secret" do
   variables :varnish_secret => node[:varnish][:secret]
 end
 
+# Open up listen port for iptables
+iptables_rule "varnish" do
+  source "port_varnish.erb"
+  variables(
+    :port => node[:varnish][:listen_port]
+  )
+end
+
+# Open up admin port for iptables
+iptables_rule "varnish_admin" do
+  source "port_varnish.erb"
+  variables(
+    :port => node[:varnish][:admin_listen_port]
+  )
+end
+
 service "varnish" do
   supports :restart => true, :reload => true
   action [ :enable, :start ]
