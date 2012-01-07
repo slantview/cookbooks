@@ -83,7 +83,7 @@ default[:varnish][:max_threads] = "1000"
 default[:varnish][:thread_timeout] = 120
 
 # Cache file location
-default[:varnish][:storage_file] = '/var/lib/varnish/$INSTANCE/varnish_storage.bin'
+default[:varnish][:storage_file] = "/var/lib/varnish/#{node['fqdn']}/varnish_storage.bin"
 
 # Cache file size: in bytes, optionally using k / M / G / T suffix,
 # or in percentage of available disk space using the % suffix.
