@@ -1,7 +1,6 @@
-# 
 # Author:: Mark Sonnabaum <mark.sonnabaum@acquia.com>
 # Cookbook Name:: drush
-# Recipe:: default
+# Recipe:: dev
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,28 +15,26 @@
 # limitations under the License.
 #
 
-include_recipe "php"
+case node[:platform]
+when "debian", "ubuntu", "centos"
+  git "/usr/share/drush" do
+    repository "git://git.drupalcode.org/project/drush.git"
+    reference "master"
+    action :sync
+  end
+  
+  bash "make-drush-symlink" do
+    code <<-EOH
+    (ln -s /usr/share/drush/drush /usr/bin/drush)
+    EOH
+    not_if { File.exists?("/usr/bin/drush") }
+    only_if { File.exists?("/usr/share/drush/drush") }
+  end
 
-# Upgrade PEAR if current version is < 1.9.1
-php_pear "pear" do
-  cur_version = `pear -V| head -1| awk -F': ' '{print $2}'`
-  action :upgrade
-  not_if { Gem::Version.new(cur_version) > Gem::Version.new('1.9.0') }
-end
-
-# Initialize drush PEAR channel
-dc = php_pear_channel "pear.drush.org" do
-  action :discover
-end
-
-# Install drush
-php_pear "drush" do
-  version node[:drush][:version]
-  channel dc.channel_name
-  action :install
-end
-
-# Install Console_Table
-php_pear "Console_Table" do
-  action :install
+  bash "install-console-table" do
+    code <<-EOH
+    (pear install Console_Table)
+    EOH
+    not_if "pear list| grep Console_Table"
+  end
 end
