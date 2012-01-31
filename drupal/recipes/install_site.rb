@@ -44,12 +44,14 @@ drush_command "install-drupal-#{node['drupal']['install_profile']}" do
         "--db-su=root",
         "--db-su-pw=#{node['mysql']['server_root_password']}"]
   notifies :create, "ruby_block[save node data]", :immediately unless Chef::Config[:solo]
+  not_if { node.attribute?("drupal_installed") }
 end
 
 # Save the node data so we have access to our state, including passwords, etc.
 unless Chef::Config[:solo]
   ruby_block "save node data" do
     block do
+      node.set['drupal_installed'] = true
       node.save
     end
     action :create
