@@ -20,4 +20,4 @@
 # specify a default version for now.  https://pear.php.net/bugs/bug.php?id=19138
 # TODO: implement preferred_state attribute and logic once pear bug is fixed
 
-default[:drush][:version] = "4.5.0"
+default[:drush][:version] = "4.6.0"
