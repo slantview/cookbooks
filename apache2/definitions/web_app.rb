@@ -18,14 +18,14 @@
 #
 
 define :web_app, :template => "web_app.conf.erb", :enable => true do
-  
+
   application_name = params[:name]
 
   include_recipe "apache2"
   include_recipe "apache2::mod_rewrite"
   include_recipe "apache2::mod_deflate"
   include_recipe "apache2::mod_headers"
-  
+
   template "#{node[:apache][:dir]}/sites-available/#{application_name}.conf" do
     source params[:template]
     owner "root"
@@ -42,7 +42,9 @@ define :web_app, :template => "web_app.conf.erb", :enable => true do
       notifies :reload, resources(:service => "apache2"), :delayed
     end
   end
-  
+
+  iptables_rule "port_#{params[:name]}"
+
   apache_site "#{params[:name]}.conf" do
     enable params[:enable]
   end

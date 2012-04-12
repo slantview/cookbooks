@@ -21,7 +21,7 @@ include_recipe "java"
 
 case node.platform
 when "centos","redhat","fedora"
-  include_recipe "jpackage"
+  include_recipe "jpackage" unless node.platform_version.to_f >= 6.0
 end
 
 tomcat_pkgs = value_for_platform(
@@ -41,7 +41,7 @@ end
 
 service "tomcat" do
   service_name "tomcat6"
-  case node["platform"]
+  case node.platform
   when "centos","redhat","fedora"
     supports :restart => true, :status => true
   when "debian","ubuntu"
@@ -50,7 +50,7 @@ service "tomcat" do
   action [:enable, :start]
 end
 
-case node["platform"]
+case node.platform
 when "centos","redhat","fedora"
   template "/etc/sysconfig/tomcat6" do
     source "sysconfig_tomcat6.erb"

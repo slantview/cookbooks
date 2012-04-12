@@ -17,7 +17,6 @@
 # limitations under the License.
 #
 
-include_recipe "jetty"
 
 remote_file node.solr.download do
   source   node.solr.link
@@ -30,21 +29,23 @@ bash 'unpack solr' do
   not_if "test -d #{node.solr.extracted}"
 end
 
-bash 'install solr into jetty' do
-  code   "cp #{node.solr.war} #{node.jetty.home}/webapps/solr.war"
-  not_if "test -f #{node.jetty.home}/webapps/solr.war"
-  notifies :restart, resources(:service => "jetty")
+bash 'install solr into tomcat' do
+  code   "cp #{node.solr.war} #{node.tomcat.webapp_dir}/solr.war"
+  not_if "test -f #{node.tomcat.webapp_dir}/solr.war"
+  notifies :restart, resources(:service => "tomcat")
 end
 
 directory node.solr.data do
-  owner     node.jetty.user
-  group     node.jetty.group
+  owner     node.tomcat.user
+  group     node.tomcat.group
   recursive true
   mode      "750"
 end
 
-template "#{node.jetty.home}/contexts/solr.xml" do
-  owner  node.jetty.user
-  source "solr.context.erb"
-  notifies :restart, resources(:service => "jetty")
+template "#{node.tomcat.context_dir}/solr.xml" do
+  owner  node.tomcat.user
+  source "solr.tomcat.xml.erb"
+  notifies :restart, resources(:service => "tomcat")
+  not_if 
 end
+

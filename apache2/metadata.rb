@@ -3,7 +3,7 @@ maintainer_email  "steve@slantview.com"
 license           "Apache 2.0"
 description       "Installs and configures all aspects of apache2 using Debian style symlinks with helper definitions"
 long_description  IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version           "1.0.12"
+version           "1.0.13"
 recipe            "apache2", "Main Apache configuration"
 recipe            "apache2::mod_alias", "Apache module 'alias' with config file"
 recipe            "apache2::mod_auth_basic", "Apache module 'auth_basic'"
@@ -71,7 +71,7 @@ attribute "apache/binary",
   :description => "Apache server daemon program",
   :default => "/usr/sbin/apache2"
 
-attribute "apache/icondir", 
+attribute "apache/icondir",
   :display_name => "Apache Icondir",
   :description => "Directory location for icons",
   :default => "/usr/share/apache2/icons"

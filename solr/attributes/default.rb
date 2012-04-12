@@ -1,4 +1,4 @@
-include_attribute "jetty"
+include_attribute "tomcat"
 
 expand!
 
@@ -11,5 +11,5 @@ default[:solr][:extracted] = "#{solr.directory}/apache-solr-#{solr.version}"
 default[:solr][:war]       = "#{solr.extracted}/dist/apache-solr-#{solr.version}.war"
 
 default[:solr][:context_path] = 'solr'
-default[:solr][:home]         = "#{node.jetty.home}/webapps/#{node.solr.context_path}"
-default[:solr][:data]         = "#{node.jetty.home}/webapps/#{node.solr.context_path}/data"
+default[:solr][:home]         = "/var/solr/#{node.solr.context_path}"
+default[:solr][:data]         = "/var/solr/#{node.solr.context_path}/data"

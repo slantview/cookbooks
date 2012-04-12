@@ -18,20 +18,4 @@
 # limitations under the License.
 #
 
-# General settings
-default['drupal']['version'] = "7.10"
-default['drupal']['dir'] = "/var/www/drupal"
-default['drupal']['db']['database'] = "drupaldb"
-default['drupal']['db']['username'] = "drupal"
-default['drupal']['db']['password'] = "password"
-default['drupal']['db']['hostname'] = "localhost"
-default['drupal']['db']['port'] = "3306"
-default['drupal']['db']['prefix'] = ""
-default['drupal']['server_aliases'] = [node['fqdn']]
-default['drupal']['install_profile'] = "standard"
-default['drupal']['site_name'] = "default"
-default['drupal']['site_user'] = "root"
-default['drupal']['site_mail'] = "user@example.com"
-default['drupal']['site_pass'] = "password"
-default['drupal']['site_locale'] = "en"
-default['drupal']['site_clean_urls'] = 1
+

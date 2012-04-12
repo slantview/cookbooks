@@ -8,6 +8,10 @@
     AllowOverride All
     Order allow,deny
     Allow from all
+    AuthUserFile <%= @params[:htpasswd_file] %>
+    AuthType Basic
+    AuthName "Drupal"
+    Require valid-user
   </Directory>
 
   <Directory />

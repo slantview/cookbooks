@@ -18,26 +18,19 @@
 # limitations under the License.
 #
 
-include_recipe "apache2"
-include_recipe "mysql::server"
-include_recipe "php"
-include_recipe "php::module_mysql"
-include_recipe "php::module_apc"
-include_recipe "php::module_curl"
-include_recipe "apache2::mod_php5"
-include_recipe "drush"
+# General settings
+default[:drupal][:version] = "7.12"
+default[:drupal][:dir] = "/var/www"
+default[:drupal][:current] = 'current'
+default[:drupal][:docroot] = ""
+default[:drupal][:server_name] = node[fqdn]
+default[:drupal][:server_aliases] = []
+default[:drupal][:htuser] = ""
+default[:drupal][:htpass] = ""
 
-if node.has_key?("ec2")
-  server_fqdn = node['ec2']['public_hostname']
-else
-  server_fqdn = node['fqdn']
-end
-
-# We must install the pre-requisites in order to support drupal
-# TODO: Make sure we are platform agnostic.  FIX THIS.
-#php_packages = %w{ php5-common php5 php5-dev php5-cli php-pear }
-#php_packages.each do |pkg|
-#  package pkg do
-#    action :install
-#  end
-#end
+default[:drupal][:db][:database] = "drupaldb"
+default[:drupal][:db][:username] = "drupal"
+default[:drupal][:db][:password] = "password"
+default[:drupal][:db][:hostname] = "localhost"
+default[:drupal][:db][:port] = "3306"
+default[:drupal][:db][:prefix] = ""
