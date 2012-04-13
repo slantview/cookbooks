@@ -19,8 +19,10 @@
 #
 
 pkg = value_for_platform(
-    [ "centos", "redhat", "fedora" ] => {"default" => "php-xml"}
+    [ "centos", "redhat", "fedora" ] => {"default" => "php-mbstring"},
+    "default" => nil
   )
+
 
 package pkg do
   action :install
