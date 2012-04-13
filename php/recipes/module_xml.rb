@@ -19,7 +19,8 @@
 #
 
 pkg = value_for_platform(
-    [ "centos", "redhat", "fedora" ] => {"default" => "php-xml"}
+    [ "centos", "redhat", "fedora" ] => {"default" => "php-xml"},
+    "default" => nil
   )
 
 package pkg do

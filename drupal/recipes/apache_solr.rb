@@ -18,3 +18,7 @@
 # limitations under the License.
 #
 
+include_recipe "drupal"
+include_recipe "solr"
+
+#TODO

@@ -12,4 +12,5 @@ default[:solr][:war]       = "#{solr.extracted}/dist/apache-solr-#{solr.version}
 
 default[:solr][:context_path] = 'solr'
 default[:solr][:home]         = "/var/solr/#{node.solr.context_path}"
+default[:solr][:conf]         = "/var/solr/#{node.solr.context_path}/conf"
 default[:solr][:data]         = "/var/solr/#{node.solr.context_path}/data"
